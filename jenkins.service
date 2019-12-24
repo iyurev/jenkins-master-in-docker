@@ -1,0 +1,24 @@
+[Unit]
+Description="Jenkins Master"
+Documentation=https://github.com/jenkinsci
+Requires=network-online.target
+After=network-online.target
+
+
+[Service]
+Environment=JENKINS_HOME="/opt/jenkins_home"
+Type=notify
+User=root
+Group=root
+ExecStartPre=mkdir -p $JENKINS_HOME
+ExecStart=podman run -ti --rm -v $JENKINS_HOME:/var/jenkins_home -p 5000:5000 -p 8080:8080  -ti --rm jenkins/jenkins:latest
+ExecReload=/usr/local/bin/consul reload
+KillMode=process
+Restart=on-failure
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+
+
+
